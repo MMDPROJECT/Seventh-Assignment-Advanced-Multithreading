@@ -20,7 +20,7 @@ public class PiCalculator {
 
         public PiRunnable(int floatingPoint, BigDecimal i) {
             this.floatingPoint = floatingPoint;
-            this.mc = new MathContext(floatingPoint + 100000);
+            this.mc = new MathContext(floatingPoint + 2);
             this.i = i;
         }
 
@@ -60,10 +60,11 @@ public class PiCalculator {
      * @return pi in string format (the string representation of the BigDecimal object)
      */
 
-    public String calculate(int floatingPoint) {
+    public static String calculate(int floatingPoint) {
+        ans = new BigDecimal(0);
         ExecutorService pool = Executors.newCachedThreadPool();
 
-        for (int i = 0; i < 100; i++){
+        for (int i = 0; i < floatingPoint * 4; i++){
             PiRunnable task = new PiRunnable(floatingPoint, BigDecimal.valueOf(i));
             pool.execute(task);
         }
@@ -73,11 +74,13 @@ public class PiCalculator {
             ans = ans.setScale(floatingPoint, RoundingMode.DOWN);
             return String.valueOf(ans);
         } catch (InterruptedException ie){
-            System.out.println(ie.getMessage());
+            ie.getMessage();
+            ie.printStackTrace();
         }
         return null;
     }
 
     public static void main(String[] args) {
+        calculate(1000);
     }
 }
